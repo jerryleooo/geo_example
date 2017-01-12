@@ -39,21 +39,9 @@
 
         var points = {{ points|tojson }};
 
-        for(var i=0; i < points.length; i++){
+        for(point of points){
 
-            var point = points[i]
-
-            var contentString = '<div id="content">'+
-                '<h1 id="firstHeading" class="firstHeading">' + point.member +  '</h1>'+
-                '<div id="bodyContent">'+
-                '<p>' + point.distance + '</p>'+
-                '<p>' + point.geohash + '</p>'+
-                '</div>'+
-                '</div>';
-
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString
-            });
+            var infowindow = new google.maps.InfoWindow();
 
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(point.latitude, point.longitude),
@@ -61,11 +49,22 @@
                 title: point.member
             });
 
-            google.maps.event.addListener(marker, 'click', (function(marker, i) {
-              return function() {
-                infowindow.open(map, marker);
-              }
-            })(marker, i));
+            google.maps.event.addListener(marker, 'click', (function(marker, point) {
+                return function() {
+                    var contentString = '<div id="content">'+
+                        '<h1 id="firstHeading" class="firstHeading">' + point.member +  '</h1>'+
+                        '<div id="bodyContent">'+
+                        '<p>' + point.distance + ' m away from center.</p>'+
+                        '<p>geohash: ' + point.geohash + '</p>'+
+                        '</div>'+
+                        '</div>';
+
+                    infowindow.setContent(contentString);
+                    infowindow.open(map, marker);
+                }
+            })(marker, point));
+
+            console.log(point)
         }
     }
 
