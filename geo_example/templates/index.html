@@ -36,12 +36,12 @@
             center: center
         });
 
-        var marker, infowindow;
 
         var points = {{ points|tojson }};
 
         for(var i=0; i < points.length; i++){
-            var point = points[i];
+
+            var point = points[i]
 
             var contentString = '<div id="content">'+
                 '<h1 id="firstHeading" class="firstHeading">' + point.member +  '</h1>'+
@@ -51,19 +51,21 @@
                 '</div>'+
                 '</div>';
 
-            infowindow = new google.maps.InfoWindow({
+            var infowindow = new google.maps.InfoWindow({
                 content: contentString
             });
 
-            marker = new google.maps.Marker({
+            var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(point.latitude, point.longitude),
                 map: map,
                 title: point.member
             });
-            marker.addListener('click', function() {
+
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+              return function() {
                 infowindow.open(map, marker);
-            });
-            console.log(marker)
+              }
+            })(marker, i));
         }
     }
 
